@@ -1,7 +1,15 @@
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: './components/index.js',
+  entry: {
+    main: './components/index.js',
+  },
+  output: {
+    filename: 'bundle-[name].js',
+    path: path.resolve(__dirname, 'public', 'scripts'),
+    publicPath: 'scripts/',
+  },
   module: {
     rules: [{
       test: /\.js$/,
@@ -13,15 +21,5 @@ module.exports = {
         plugins: ['syntax-dynamic-import']
       }
     }]
-  },
-  output: {
-    filename: 'bundle-[name].js',
-    path: path.resolve(__dirname, 'public', 'scripts'),
-    publicPath: 'scripts/',
-  },
-  devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    compress: true,
-    port: 9000
   }
 };

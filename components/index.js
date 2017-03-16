@@ -36,7 +36,5 @@ export default App
 
 const isWebpack = typeof __webpack_require__ !== "undefined";
 if (isWebpack) {
-  setTimeout(() => {
-    render(<App />, document.getElementById('root'))
-  }, 1000)
+  window.onload = () => render(<App />, document.getElementById('root'))
 }
