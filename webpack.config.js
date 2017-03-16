@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './components/index.js',
   module: {
     rules: [{
       test: /\.js$/,
@@ -9,7 +9,7 @@ module.exports = {
       loader: 'babel-loader',
       options: {
         babelrc: false,
-        presets: ['react'],
+        presets: ['es2015', 'stage-2', 'react'],
         plugins: ['syntax-dynamic-import']
       }
     }]
