@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import express from 'express'
-import App from './components'
+import App from './components/app'
 
 const app = express()
 export default app
@@ -23,7 +23,7 @@ const html = (contents, scripts) => `
   <body>
     <div id='root'>${contents}</div>
     ${scripts.map(script => {
-      return `<script src="scripts/${script}"></script>`
+      return `<script src="/scripts/${script}"></script>`
     }).join('\n')}
   </body>
 </html>
@@ -34,7 +34,9 @@ app.get('/empty', (req, res) => {
   res.end(html('', ['bundle-main.js']))
 })
 
-app.get('/', (req, res) => {
+import { StaticRouter } from 'react-router'
+
+app.get('*', (req, res) => {
   console.log('got request')
 
   let modules = {};
@@ -55,7 +57,12 @@ app.get('/', (req, res) => {
   let scripts = ['bundle-main.js'];
 
   const requires = []
-  const content = renderToString(<App requires={requires} />)
+  const context = {}
+  const content = renderToString((
+    <StaticRouter location={req.url} context={context}>
+      <App requires={requires} />
+    </StaticRouter>
+  ))
 
 
   requires.forEach(file => {
