@@ -38,6 +38,7 @@ type Options = {
 };
 
 export default function Loadable<Props: {}, Err: Error>(opts: Options) {
+
   let loader = opts.loader;
   let LoadingComponent = opts.LoadingComponent;
   let delay = opts.delay || 200;
@@ -99,6 +100,10 @@ export default function Loadable<Props: {}, Err: Error>(opts: Options) {
 
 
     componentWillMount() {
+      if (this.context.requires) {
+        this.context.requires.push(serverSideRequirePath)
+      }
+
       this._mounted = true;
 
       if (this.state.Component) {
@@ -129,10 +134,6 @@ export default function Loadable<Props: {}, Err: Error>(opts: Options) {
     }
 
     render() {
-      if (!isWebpack) {
-        this.context.requires.push(serverSideRequirePath)
-      }
-
       let { pastDelay, error, Component } = this.state;
 
       if (isLoading || error) {

@@ -1,17 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { NotFound } from './not-found';
+import { NotFound } from './status';
 import Loadable from './react-loadable';
-import Loading from './Loading';
-import fakeDelay from './fakeDelay';
-import path from 'path';
+import Loading from './loading';
 
-let LoadableExample = Loadable({
-  loader: () => import('./Example'),
+let Topics = Loadable({
+  loader: () => import('./topics'),
   LoadingComponent: Loading,
   delay: 200,
-  serverSideRequirePath: `${__dirname}/Example`,
-  webpackRequireWeakId: () => require.resolveWeak('./Example'),
+  serverSideRequirePath: `${__dirname}/topics`,
+  webpackRequireWeakId: () => require.resolveWeak('./topics'),
 });
 
 let Something = Loadable({
@@ -36,54 +34,20 @@ const About = () => (
   </div>
 )
 
-const Topics = ({ match }) => (
-  <div>
-    <h2>Topics</h2>
-    <ul>
-      <li>
-        <Link to={`${match.url}/rendering`}>
-          Rendering with React
-        </Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/components`}>
-          Components
-        </Link>
-      </li>
-      <li>
-        <Link to={`${match.url}/props-v-state`}>
-          Props v. State
-        </Link>
-      </li>
-    </ul>
-
-    <Route path={`${match.url}/:topicId`} component={Topic}/>
-    <Route exact path={match.url} render={() => (
-      <h3>Please select a topic.</h3>
-    )}/>
-  </div>
-)
-
-const Topic = ({ match }) => (
-  <div>
-    <h3>{match.params.topicId}</h3>
-  </div>
-)
-
 class App extends React.Component {
   static childContextTypes = {
     requires: React.PropTypes.array,
   }
 
   state = {
-    child: (<p>empty</p>)
+    child: (<button onClick={() => this.loadChild()}>Load child</button>)
   }
 
   getChildContext() {
     return { requires: this.props.requires }
   }
 
-  loadChild = () => {
+  loadChild() {
     this.setState({
       child: (<Something />)
     })
@@ -111,6 +75,8 @@ class App extends React.Component {
           <Route path="/topics" component={Topics} />
           <Route component={NotFound} />
         </Switch>
+        <hr />
+        {child}
       </div>
     );
   }

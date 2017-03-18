@@ -37,24 +37,23 @@ app.get('/empty', (req, res) => {
 import { StaticRouter } from 'react-router'
 
 app.get('*', (req, res) => {
-  console.log('got request')
 
-  let modules = {};
-  let bundles = {};
+  const modules = {}
+  const bundles = {}
 
   const webpackStats = res.locals.webpackStats.toJson()
 
   webpackStats.modules.forEach(module => {
-    let parts = module.identifier.split('!');
-    let filePath = parts[parts.length - 1];
-    modules[filePath] = module.chunks;
-  });
+    const parts = module.identifier.split('!')
+    const filePath = parts[parts.length - 1]
+    modules[filePath] = module.chunks
+  })
 
   webpackStats.chunks.forEach(chunk => {
-    bundles[chunk.id] = chunk.files;
-  });
+    bundles[chunk.id] = chunk.files
+  })
 
-  let scripts = ['bundle-main.js'];
+  const scripts = ['bundle-main.js']
 
   const requires = []
   const context = {}
@@ -64,15 +63,16 @@ app.get('*', (req, res) => {
     </StaticRouter>
   ))
 
+  console.log('context', context)
 
   requires.forEach(file => {
-    let matchedBundles = modules[file + '.js'];
+    let matchedBundles = modules[file + '.js']
     matchedBundles.forEach(bundle => {
       bundles[bundle].forEach(script => {
-        scripts.push(script);
-      });
-    });
-  });
+        scripts.push(script)
+      })
+    })
+  })
 
   res.set('content-type', 'text/html')
   res.end(html(content, scripts))
